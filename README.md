@@ -1,18 +1,48 @@
-# Chatbot-Using-Gemini-Api-with-Streamlit 
+# Gemini Q&A Chatbot with Saved Chat History
 
+A Streamlit chatbot powered by Google Gemini that streams answers and keeps the full conversation history on screen for the session.
 
-1. **Project Setup**: Initialize a new Streamlit project in Python. Install necessary libraries, including Streamlit for the front-end interface and the Gemini API SDK for backend functionalities.
+## 🔗 Live demo
 
-2. **Gemini API Integration**: Obtain API keys from Gemini. Integrate the Gemini API with the Streamlit application, enabling it to process natural language queries and retrieve relevant data.
+Not hosted yet. Deploy it for free on Streamlit Community Cloud: click the badge (or go to https://share.streamlit.io → **Create app**) and use repository `amitmohanty022/Chatbot-Using-Gemini-Api-with-saved-output-responses`, branch `main`, main file `qnapp.py`.
 
-3. **User Interface Design**: Create a user-friendly interface in Streamlit. The interface will include a text input box for user queries and a submit button to send the queries to the chatbot.
+[![Deploy on Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=amitmohanty022/Chatbot-Using-Gemini-Api-with-saved-output-responses&branch=main&mainModule=qnapp.py)
 
-4. **Query Handling**: Capture user input through the Streamlit interface. When the user submits a query, send the text to the Gemini API for processing.
+On the Streamlit deploy page, add `GOOGLE_API_KEY` under **Advanced settings → Secrets**.
 
-5. **Response Processing**: The Gemini API processes the input, leveraging its natural language understanding capabilities. The processed response is sent back to the Streamlit application.
+## Features
 
-6. **Display Responses**: Present the chatbot's response in the Streamlit interface in a conversational format. The interface updates dynamically to show the ongoing conversation.
+- Streaming responses from Gemini
+- Multi-turn chat: the model remembers earlier questions in the session
+- Chat history shown below every answer
 
-7. **Error Handling**: Implement error-handling mechanisms to manage issues like API timeouts, invalid queries, or connection errors, ensuring a smooth user experience.
+## Tech stack
 
-8. **Deployment and Testing**: Test the application locally. Once everything works as expected, deploy the Streamlit application on a cloud platform like Heroku or Streamlit Sharing, making it accessible to end-users.
+Python, Streamlit, Google Gen AI SDK (`google-genai`), Gemini 3.8 Flash
+
+## Run locally
+
+```bash
+git clone https://github.com/amitmohanty022/Chatbot-Using-Gemini-Api-with-saved-output-responses.git
+cd Chatbot-Using-Gemini-Api-with-saved-output-responses
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Create a `.env` file (or add the same keys to **Streamlit secrets** when deploying):
+
+```env
+GOOGLE_API_KEY=your_gemini_api_key   # get one at https://aistudio.google.com/apikey
+# optional, defaults to gemini-3.8-flash
+GEMINI_MODEL=gemini-3.8-flash
+```
+
+Then start the app:
+
+```bash
+streamlit run qnapp.py
+```
+
+## Author
+
+**Amit Kumar Mohanty** · [GitHub](https://github.com/amitmohanty022) · [LinkedIn](https://www.linkedin.com/in/amitkrmohanty/)
