@@ -1,18 +1,62 @@
-# Chatbot-Using-Gemini-Api-with-Streamlit 
+# Chatbot Using Gemini API (with saved chat history)
 
+A simple question-and-answer chatbot built with Streamlit and Google Gemini. It streams each answer as it is generated, remembers earlier questions in the same session, and shows the full chat history below the answer.
 
-1. **Project Setup**: Initialize a new Streamlit project in Python. Install necessary libraries, including Streamlit for the front-end interface and the Gemini API SDK for backend functionalities.
+## How to run (step by step)
 
-2. **Gemini API Integration**: Obtain API keys from Gemini. Integrate the Gemini API with the Streamlit application, enabling it to process natural language queries and retrieve relevant data.
+You need **Python 3.10 or newer** ([download](https://www.python.org/downloads/)).
 
-3. **User Interface Design**: Create a user-friendly interface in Streamlit. The interface will include a text input box for user queries and a submit button to send the queries to the chatbot.
+**1. Download the project**
 
-4. **Query Handling**: Capture user input through the Streamlit interface. When the user submits a query, send the text to the Gemini API for processing.
+```bash
+git clone https://github.com/amitmohanty022/Chatbot-Using-Gemini-Api-with-saved-output-responses.git
+cd Chatbot-Using-Gemini-Api-with-saved-output-responses
+```
 
-5. **Response Processing**: The Gemini API processes the input, leveraging its natural language understanding capabilities. The processed response is sent back to the Streamlit application.
+**2. Create a virtual environment and activate it**
 
-6. **Display Responses**: Present the chatbot's response in the Streamlit interface in a conversational format. The interface updates dynamically to show the ongoing conversation.
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
+```
 
-7. **Error Handling**: Implement error-handling mechanisms to manage issues like API timeouts, invalid queries, or connection errors, ensuring a smooth user experience.
+**3. Install the requirements**
 
-8. **Deployment and Testing**: Test the application locally. Once everything works as expected, deploy the Streamlit application on a cloud platform like Heroku or Streamlit Sharing, making it accessible to end-users.
+```bash
+pip install -r requirements.txt
+```
+
+**4. Add your Gemini API key**
+
+- Get a free key at https://aistudio.google.com/apikey
+- Copy `.env.example` to a new file named `.env`
+  - Windows: `copy .env.example .env`
+  - macOS / Linux: `cp .env.example .env`
+- Open `.env` and paste your key after `GOOGLE_API_KEY=`
+
+**5. Start the app**
+
+```bash
+streamlit run qnapp.py
+```
+
+Your browser opens at http://localhost:8501. Type a question and click **Ask the question**.
+
+## How it works
+
+1. A Gemini chat session (`gemini-3.8-flash` by default) is created once per browser session, so follow-up questions have context.
+2. Each answer is streamed and shown as it arrives.
+3. Every question and answer is saved in the session and listed under "The Chat history is".
+
+To use a different Gemini model, set `GEMINI_MODEL` in `.env`. Refreshing the page starts a new chat.
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| "GOOGLE_API_KEY is not set" | Make sure the file is named exactly `.env` (not `.env.txt`) and is in the project folder. |
+| `streamlit: command not found` | Activate the virtual environment (step 2) first. |
+| `404 model not found` | Set `GEMINI_MODEL=gemini-3.6-flash` in `.env`. |
