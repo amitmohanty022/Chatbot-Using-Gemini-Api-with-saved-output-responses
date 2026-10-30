@@ -1,46 +1,52 @@
-from dotenv import load_dotenv
-load_dotenv()
+import os
 
 import streamlit as st
-import os
-import google.generativeai as genai
+from dotenv import load_dotenv
+from google import genai
 
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+load_dotenv()
 
-## FUNTION TO LOAD GEMINI PRO MODEL
-model=genai.GenerativeModel("gemini-pro")
-chat=model.start_chat(history=[])
-
-def get_gemini_response(question):
-    response=chat.send_message(question,stream=True)
-    return response
-
-#sTREAMLIT APP
+API_KEY = os.getenv("GOOGLE_API_KEY")
+MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 st.set_page_config(page_title="Q&A Demo")
-
 st.header("GEMINI LLM APPLICATION")
 
-#CHATHISTORY IF IT DOES NOT EXIST
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history']=[]
+if not API_KEY:
+    st.error("GOOGLE_API_KEY is not set. Copy .env.example to .env and paste your Gemini API key.")
+    st.stop()
 
-input=st.text_input("Input: ", key="input")
-submit=st.button("Ask the question")
 
-if submit and input:
-    response=get_gemini_response(input)
-    #add user query and response to session chat history
-    st.session_state['chat_history'].append(("You",input))
+# Keep one client and one chat session per browser session so the model
+# remembers earlier questions.
+if "chat" not in st.session_state:
+    client = genai.Client(api_key=API_KEY)
+    st.session_state["chat"] = client.chats.create(model=MODEL)
+
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = []
+
+
+def get_gemini_response(question):
+    return st.session_state["chat"].send_message_stream(question)
+
+
+user_input = st.text_input("Input: ", key="input")
+submit = st.button("Ask the question")
+
+if submit and user_input:
+    response = get_gemini_response(user_input)
+    st.session_state["chat_history"].append(("You", user_input))
     st.subheader("The Response is")
+    full_answer = ""
+    placeholder = st.empty()
     for chunk in response:
-        st.write(chunk.text)
-        st.session_state['chat_history'].append(("Bot",chunk.text))
+        if chunk.text:
+            full_answer += chunk.text
+            placeholder.markdown(full_answer)
+    st.session_state["chat_history"].append(("Bot", full_answer))
 
 st.subheader("The Chat history is")
 
-for role,text in st.session_state['chat_history']:
-    st.write(f"{role}:{text}")
-
-
-
+for role, text in st.session_state["chat_history"]:
+    st.write(f"{role}: {text}")
